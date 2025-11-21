@@ -22,5 +22,8 @@ int main() {
     std::println("GameAssembly.dll: 0x{:X}", mod.base);
 
     const auto assembly = Il2CppAssembly::get_assembly("Assembly-CSharp");
-    std::println("{}: 0x{:X}", assembly->name(), (uintptr_t)assembly);
+    std::println("{}: 0x{:X}", assembly->name(), (std::uintptr_t)assembly);
+
+    const auto klass = assembly->image()->get_class("EFT.TarkovApplication");
+    std::println("{}.{}: 0x{:X}", klass->namespaze(), klass->name(), (std::uintptr_t)klass);
 }
