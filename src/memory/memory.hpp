@@ -24,10 +24,17 @@ public:
     bool add_module(const std::string& req_module);
     module_t get_module(const std::string& req_module);
 
+    std::uint32_t protect(std::uintptr_t address, size_t size, std::uint32_t protect);
+
     template <typename t = std::uintptr_t>
     t read(std::uintptr_t address);
 
     std::string read_string(std::uintptr_t address);
+
+    std::wstring read_wstring(std::uintptr_t address);
+
+    template <typename t = std::uintptr_t>
+    void write(std::uintptr_t address, const t& value);
 };
 
 template <typename t>
@@ -39,6 +46,13 @@ t memory_c::read(std::uintptr_t address) {
     }
 
     return buffer;
+}
+
+template <typename t>
+void memory_c::write(std::uintptr_t address, const t& value) {
+    if (!WriteProcessMemory(this->handle, reinterpret_cast<void*>(address), &value, sizeof(t), nullptr)) {
+        throw std::runtime_error("memory write fail");
+    }
 }
 
 extern std::shared_ptr<memory_c> memory;

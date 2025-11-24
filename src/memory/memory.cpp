@@ -79,4 +79,22 @@ std::string memory_c::read_string(std::uintptr_t address) {
     return buffer;
 }
 
+std::wstring memory_c::read_wstring(std::uintptr_t address) {
+    std::wstring buffer { };
+
+    do {
+        buffer.push_back(this->read<wchar_t>(address++));
+    } while (this->read<wchar_t>(address) != L'\0');
+
+    return buffer;
+}
+
+std::uint32_t memory_c::protect(std::uintptr_t address, size_t size, std::uint32_t protect) {
+    DWORD old;
+    if (!VirtualProtectEx(this->handle, reinterpret_cast<void*>(address), size, protect, &old)) {
+        throw std::runtime_error("memory protect fail");
+    }
+    return old;
+}
+
 std::shared_ptr<memory_c> memory = std::make_shared<memory_c>();
