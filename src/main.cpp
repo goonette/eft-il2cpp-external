@@ -23,11 +23,11 @@ int main() {
     const auto assembly = Il2CppAssembly::get_assembly("Assembly-CSharp");
     std::println("{}: 0x{:X}", assembly->name(), (std::uintptr_t)assembly);
 
-    const auto klass = assembly->image()->get_class("EFT.TarkovApplication");
+    const auto klass = assembly->image()->get_class("EFT.ItemFactory");
     std::println("{}.{}: 0x{:X}", klass->namespaze(), klass->name(), (std::uintptr_t)klass);
 
     const auto type = klass->byval_arg();
-    std::println("{}: 0x{:X}", type_to_string(type->type()), (std::uintptr_t)type);
+    std::println("{}: 0x{:X}", type_to_string(type.type), (std::uintptr_t)type.data);
 
     const auto field = klass->get_field("UnlockAndShowAllLocations");
     std::println("{}: 0x{:X}", field->name(), field->offset());

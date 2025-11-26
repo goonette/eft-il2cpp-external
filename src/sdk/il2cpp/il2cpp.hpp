@@ -143,8 +143,11 @@ std::string type_to_string(Il2CppTypeEnum type) {
 }
 
 struct Il2CppType {
-    OFFSET(data(), std::uintptr_t, 0x0); // union; value depends on type()
-    OFFSET(type(), Il2CppTypeEnum, 0xA);
+    void* data;
+
+    char pad_0008[2];
+    Il2CppTypeEnum type;
+    char pad_000B[5];
 };
 
 struct FieldInfo {
@@ -162,7 +165,7 @@ struct MethodInfo {
 struct Il2CppClass {
     OFFSET_STR(name(), 0x10);
     OFFSET_STR(namespaze(), 0x18);
-    OFFSET(byval_arg(), Il2CppType*, 0x20);
+    OFFSET(byval_arg(), Il2CppType, 0x20);
     OFFSET(parent(), Il2CppClass*, 0x58);
     OFFSET(fields(), FieldInfo*, 0x80);
     OFFSET(methods(), std::uintptr_t, 0x98);
@@ -243,6 +246,7 @@ struct Il2CppImage {
             const auto current = memory->read<Il2CppClass*>(type_info_table + (index * sizeof(std::uintptr_t)));
 
             const auto name = std::format("{}.{}", current->namespaze(), current->name());
+
             ret.emplace_back(name, current);
         }
 
